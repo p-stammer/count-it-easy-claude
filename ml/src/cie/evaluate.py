@@ -12,6 +12,7 @@ import numpy as np
 from .augment import degrade, glare, sheen
 from .data import Board, crop_digits
 from .decode import decode
+from .recognize import recognize
 from .geometry import DEFAULT_GEOMETRY, BoardGeometry
 from .scoring import score
 
@@ -65,7 +66,12 @@ def standard_conditions() -> list[Condition]:
 
 
 def evaluate(predict: PredictFn, boards: list[Board], conditions: list[Condition] | None = None,
-             interpolation: int = cv2.INTER_LINEAR) -> dict[str, dict[str, float]]:
+             interpolation: int = cv2.INTER_LINEAR, refine: bool = False,
+             unsure: float = 0.75) -> dict[str, dict[str, float]]:
+    """Per condition: digit accuracy, fully correct boards before / after the
+    uniqueness constraint, correct score, and (with refine=True) the app's
+    full pipeline including alignment refinement. 'flag_recall' is the share
+    of wrongly decoded tiles the app marks as unsure."""
     conditions = conditions or standard_conditions()
     acc: dict[str, dict[str, list[float]]] = {}
     for b in boards:
@@ -77,15 +83,29 @@ def evaluate(predict: PredictFn, boards: list[Board], conditions: list[Condition
                 img = c.photometric(img, rng)
             probs = predict(crop_digits(img, c.geometry, interpolation=interpolation))
             dec = decode(probs)
+            if refine:
+                dec, _, _ = recognize(img, predict, c.geometry, unsure=unsure, interpolation=interpolation)
             naive_ok = probs.argmax(-1) == truth
             m = acc.setdefault(c.name, {"digit_acc": [], "board_naive": [], "board_decoded": [],
-                                        "score_ok": [], "mean_conf": []})
+                                        "score_ok": [], "mean_conf": [], "flagged": [], "wrong_tiles": [],
+                                        "wrong_flagged": []})
+            wrong = np.array([dec.board[i] != b.tiles[i] for i in range(len(b.tiles))])
+            flagged = dec.tile_confidence < unsure
+            m["flagged"].append(float(flagged.sum()))
+            m["wrong_tiles"].append(float(wrong.sum()))
+            m["wrong_flagged"].append(float((wrong & flagged).sum()))
             m["digit_acc"].append(naive_ok.mean())
             m["board_naive"].append(float(naive_ok.all()))
             m["board_decoded"].append(float(dec.board == b.tiles))
             m["score_ok"].append(float(dec.score == score(b.tiles)))
             m["mean_conf"].append(float(dec.tile_confidence.mean()))
-    return {k: {mk: float(np.mean(mv)) for mk, mv in v.items()} for k, v in acc.items()}
+    out = {}
+    for k, v in acc.items():
+        r = {mk: float(np.mean(mv)) for mk, mv in v.items() if mk not in ("wrong_tiles", "wrong_flagged")}
+        wt = sum(v["wrong_tiles"])
+        r["flag_recall"] = float(sum(v["wrong_flagged"]) / wt) if wt else 1.0
+        out[k] = r
+    return out
 
 
 def summarize(results: dict[str, dict[str, float]]) -> dict[str, float]:
@@ -94,9 +114,9 @@ def summarize(results: dict[str, dict[str, float]]) -> dict[str, float]:
 
 
 def format_table(results: dict[str, dict[str, float]]) -> str:
-    lines = [f"{'condition':<16}{'digit acc':>10}{'board(naive)':>14}{'board(decoded)':>16}{'score ok':>10}"]
-    for k, v in results.items():
-        lines.append(f"{k:<16}{v['digit_acc']:>10.4f}{v['board_naive']:>14.3f}{v['board_decoded']:>16.3f}{v['score_ok']:>10.3f}")
-    s = summarize(results)
-    lines.append(f"{'MEAN':<16}{s['digit_acc']:>10.4f}{s['board_naive']:>14.3f}{s['board_decoded']:>16.3f}{s['score_ok']:>10.3f}")
+    lines = [f"{'condition':<16}{'digit acc':>10}{'board naive':>13}{'board final':>13}{'score ok':>10}{'flags/board':>12}{'err flagged':>12}"]
+    rows = list(results.items()) + [("MEAN", summarize(results))]
+    for k, v in rows:
+        lines.append(f"{k:<16}{v['digit_acc']:>10.4f}{v['board_naive']:>13.3f}{v['board_decoded']:>13.3f}"
+                     f"{v['score_ok']:>10.3f}{v['flagged']:>12.2f}{v['flag_recall']:>12.2f}")
     return "\n".join(lines)

@@ -1,10 +1,19 @@
 {
-  "version": "dev",
+  "version": "2.0",
   "input": [
     3,
     128,
     128
   ],
   "outputs": "9 logits: [1,5,9 | 2,6,7 | 3,4,8]",
-  "bytes": 77865
+  "bytes": 77865,
+  "test_metrics": {
+    "digit_acc": 0.9978070175438596,
+    "board_naive": 0.9280303030303031,
+    "board_decoded": 0.9734848484848485,
+    "score_ok": 0.9886363636363636,
+    "mean_conf": 0.8876731498372209,
+    "flagged": 0.5227272727272727,
+    "flag_recall": 1.0
+  }
 }

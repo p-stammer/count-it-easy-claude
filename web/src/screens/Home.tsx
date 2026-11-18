@@ -22,6 +22,7 @@ export function Home() {
         {open
           ? <button class="btn big" style={{ borderColor: '#88B358' }} onClick={() => go(`session/${open.id}`)}>Spielrunde fortsetzen</button>
           : <button class="btn big" style={{ borderColor: '#88B358' }} onClick={() => go('session/new')}>Neue Spielrunde</button>}
+        {open && <button class="link" style={{ alignSelf: 'center' }} onClick={() => go('session/new')}>oder neue Spielrunde starten</button>}
         <div class="row2">
           <button class="btn" style={{ borderColor: '#fd9b1c' }} onClick={() => go('players')}>Spieler</button>
           <button class="btn" style={{ borderColor: '#ff00e6' }} onClick={() => go('stats')}>Statistik</button>

@@ -90,11 +90,17 @@ export function Camera() {
   async function pickFile(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
     if (!f) return;
+    const url = URL.createObjectURL(f);
     try {
-      const bmp = await createImageBitmap(f, { imageOrientation: 'from-image' } as ImageBitmapOptions);
-      run(captureFromImage(bmp));
+      // <img> applies EXIF orientation in all current browsers
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      run(captureFromImage(img));
     } catch {
       setError('Das Bild konnte nicht geladen werden.');
+    } finally {
+      URL.revokeObjectURL(url);
     }
     (e.target as HTMLInputElement).value = '';
   }

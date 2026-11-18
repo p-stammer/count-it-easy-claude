@@ -51,6 +51,11 @@ export function SessionView({ id }: { id: string }) {
   const [confirm, setConfirm] = useState(false);
   const reload = () => { getSession(id).then((s) => setSession(s ?? null)); listPlayers(true).then(setPlayers); gamesOfSession(id).then(setGames); };
   useEffect(reload, [id]);
+  const allDone = !!session && session.playerIds.every((pid) =>
+    Array.from({ length: session.rounds }, (_, i) => i + 1).every((r) => games.some((g) => g.playerId === pid && g.round === r)));
+  useEffect(() => {
+    if (session && allDone && !session.finishedAt) updateSession({ ...session, finishedAt: Date.now() }).then(reload);
+  }, [allDone, session?.id, session?.finishedAt]);
   if (session === undefined) return null;
   if (session === null) return <main class="screen"><Header title="Spielrunde" /><p class="center muted">Nicht gefunden.</p></main>;
 
@@ -62,7 +67,6 @@ export function SessionView({ id }: { id: string }) {
   const totals = ps.map((p) => rounds.reduce((s, r) => s + (cell(p.id, r)?.score ?? 0), 0));
   const best = Math.max(...totals, 0);
   const done = currentRound === null;
-  if (done && !session.finishedAt) updateSession({ ...session, finishedAt: Date.now() }).then(reload);
 
   return (
     <main class="screen">

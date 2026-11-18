@@ -14,7 +14,7 @@ export interface Recognition extends Decoded {
 }
 
 /** Confidence below which a tile is shown as "please check". */
-export const UNSURE = 0.85;
+export const UNSURE = 0.75; // calibrated on the validation boards (see ml/RESULTS.md)
 
 const needsRefine = (d: Decoded) => d.confidence.some((c) => c < UNSURE) || d.corrected.length > 0;
 

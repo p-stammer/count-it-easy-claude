@@ -18,3 +18,11 @@ export const go = (path: string, replace = false) => {
   else location.hash = h;
 };
 export const back = () => (history.length > 1 ? history.back() : go('home', true));
+
+/** Go back `steps` history entries, then navigate to `path` (drops e.g. camera + result). */
+export function backThenGo(steps: number, path: string) {
+  if (history.length <= steps) { go(path, true); return; }
+  const on = () => { removeEventListener('popstate', on); go(path, true); };
+  addEventListener('popstate', on);
+  history.go(-steps);
+}

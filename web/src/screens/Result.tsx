@@ -4,7 +4,7 @@ import { PAD } from '../core/frame';
 import { recognize, UNSURE } from '../core/recognize';
 import { lineScores, score, tileKey, type Tile } from '../core/scoring';
 import { addPlayer, addSample, deleteGame, gamesOfSession, getSetting, listPlayers, saveGame, type Player } from '../db';
-import { back, go } from '../router';
+import { back, backThenGo, go } from '../router';
 import { current } from '../store';
 import { Header } from '../ui/Header';
 import { HexBoard, TileGlyph } from '../ui/HexBoard';
@@ -94,7 +94,7 @@ function ResultView() {
       if (blob) await addSample({ image: blob, geometry: rec.geometry, tiles: board.map(tileKey), predicted: rec.board.map(tileKey) });
     }
     current.recognition = null;
-    go(ctx.sessionId ? `session/${ctx.sessionId}` : 'stats', true);
+    backThenGo(2, ctx.sessionId ? `session/${ctx.sessionId}` : 'stats');
   }
 
   const fixedPlayer = current.context.playerId ? players.find((p) => p.id === current.context.playerId) : undefined;

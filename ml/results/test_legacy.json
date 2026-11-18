@@ -1,0 +1,112 @@
+{
+  "results": {
+    "clean": {
+      "digit_acc": 1.0,
+      "board_naive": 1.0,
+      "board_decoded": 1.0,
+      "score_ok": 1.0,
+      "mean_conf": 0.999581783802379,
+      "flagged": 0.0,
+      "flag_recall": 1.0
+    },
+    "shift 0.020": {
+      "digit_acc": 1.0,
+      "board_naive": 1.0,
+      "board_decoded": 1.0,
+      "score_ok": 1.0,
+      "mean_conf": 0.9981959012256301,
+      "flagged": 0.0,
+      "flag_recall": 1.0
+    },
+    "shift 0.035": {
+      "digit_acc": 0.9941520467836259,
+      "board_naive": 0.8333333333333334,
+      "board_decoded": 0.9583333333333334,
+      "score_ok": 1.0,
+      "mean_conf": 0.9961094326739263,
+      "flagged": 0.08333333333333333,
+      "flag_recall": 0.0
+    },
+    "scale 0.94": {
+      "digit_acc": 1.0,
+      "board_naive": 1.0,
+      "board_decoded": 1.0,
+      "score_ok": 1.0,
+      "mean_conf": 0.9990947962156157,
+      "flagged": 0.0,
+      "flag_recall": 1.0
+    },
+    "scale 1.06": {
+      "digit_acc": 1.0,
+      "board_naive": 1.0,
+      "board_decoded": 1.0,
+      "score_ok": 1.0,
+      "mean_conf": 0.9988722741551314,
+      "flagged": 0.0,
+      "flag_recall": 1.0
+    },
+    "scale 0.9": {
+      "digit_acc": 0.9941520467836257,
+      "board_naive": 0.6666666666666666,
+      "board_decoded": 0.8333333333333334,
+      "score_ok": 1.0,
+      "mean_conf": 0.9954787980172747,
+      "flagged": 0.0,
+      "flag_recall": 0.0
+    },
+    "scale 1.1": {
+      "digit_acc": 1.0,
+      "board_naive": 1.0,
+      "board_decoded": 1.0,
+      "score_ok": 1.0,
+      "mean_conf": 0.99351498817127,
+      "flagged": 0.0,
+      "flag_recall": 1.0
+    },
+    "rotate 3.0": {
+      "digit_acc": 1.0,
+      "board_naive": 1.0,
+      "board_decoded": 1.0,
+      "score_ok": 1.0,
+      "mean_conf": 0.9990764681712911,
+      "flagged": 0.0,
+      "flag_recall": 1.0
+    },
+    "glare": {
+      "digit_acc": 0.9831871345029239,
+      "board_naive": 0.4166666666666667,
+      "board_decoded": 0.6666666666666666,
+      "score_ok": 0.9166666666666666,
+      "mean_conf": 0.957707302125708,
+      "flagged": 1.2083333333333333,
+      "flag_recall": 1.0
+    },
+    "strong glare": {
+      "digit_acc": 0.9042397660818713,
+      "board_naive": 0.041666666666666664,
+      "board_decoded": 0.16666666666666666,
+      "score_ok": 0.25,
+      "mean_conf": 0.7870701657982359,
+      "flagged": 5.416666666666667,
+      "flag_recall": 0.9682539682539683
+    },
+    "dark+blurry": {
+      "digit_acc": 0.9985380116959064,
+      "board_naive": 0.9166666666666666,
+      "board_decoded": 1.0,
+      "score_ok": 1.0,
+      "mean_conf": 0.9870896610018015,
+      "flagged": 0.25,
+      "flag_recall": 1.0
+    }
+  },
+  "mean": {
+    "digit_acc": 0.9885699096225412,
+    "board_naive": 0.8068181818181818,
+    "board_decoded": 0.875,
+    "score_ok": 0.9242424242424242,
+    "mean_conf": 0.9737992337598421,
+    "flagged": 0.6325757575757577,
+    "flag_recall": 0.8152958152958153
+  }
+}

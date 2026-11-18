@@ -58,8 +58,8 @@ export function captureFromVideo(video: HTMLVideoElement, containerPx: number, i
  * Work image from a photo: the central square of the photo is treated as the
  * frame (the board should fill it, like the training photos).
  */
-export function captureFromImage(img: HTMLImageElement | ImageBitmap): HTMLCanvasElement {
-  const w = img.width, h = img.height, s = Math.min(w, h);
+export function captureFromImage(img: HTMLImageElement): HTMLCanvasElement {
+  const w = img.naturalWidth, h = img.naturalHeight, s = Math.min(w, h);
   const fx = (w - s) / 2, fy = (h - s) / 2;
   const out = newCanvas(WORK_SIZE);
   const ctx = out.getContext('2d')!;
